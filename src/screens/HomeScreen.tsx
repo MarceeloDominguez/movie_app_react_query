@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Image,
@@ -9,6 +9,8 @@ import {
 } from "react-native";
 import { useMovies } from "../hooks/useMovies";
 import { Movie } from "../interfaces/moviesInterface";
+import Icon from "@expo/vector-icons/Ionicons";
+import PosterPrimary from "../components/PosterPrimary";
 
 const { width, height } = Dimensions.get("window");
 
@@ -22,13 +24,17 @@ const BASE_IMG = "https://image.tmdb.org/t/p";
 
 export default function HomeScreen() {
   const scrollX = React.useRef(new Animated.Value(0)).current;
-  const { data: movies, isLoading, isFetching } = useMovies();
+  const { data: movies, isLoading } = useMovies();
 
-  const [spacerMovie, setSpacerMovie] = useState<Movie[]>([
-    { key: "left-spacer" } as any,
-    ...movies!,
-    { key: "right-spacer" },
-  ]);
+  const [spacerMovie, setSpacerMovie] = useState<Movie[]>([]);
+
+  useEffect(() => {
+    setSpacerMovie([
+      { key: "left-spacer" } as any,
+      ...(movies || []),
+      { key: "right-spacer" },
+    ]);
+  }, [movies]);
 
   if (isLoading) {
     return (
@@ -41,7 +47,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={styles.container}>
       <View style={StyleSheet.absoluteFillObject}>
         {movies?.map((item, index) => {
           const poster = `${BASE_IMG}/w500${item.poster_path}`;
@@ -83,7 +89,7 @@ export default function HomeScreen() {
           const poster = `${BASE_IMG}/w500${item.poster_path}`;
 
           if (!item.poster_path) {
-            return <View style={{ width: SPACER_ITEM_SIZE }} />;
+            return <View style={styles.spacerItemCarousel} />;
           }
 
           const inputRange = [
@@ -98,24 +104,14 @@ export default function HomeScreen() {
           });
 
           return (
-            <View
-              style={{
-                width: POSTER_SIZE_WIDTH,
-              }}
-            >
+            <View style={styles.containerImage}>
               <Animated.View
-                style={{
-                  marginHorizontal: SPACING,
-                  marginTop: 50,
-                  padding: SPACING * 2,
-                  backgroundColor: "transparent",
-                  transform: [{ translateY }],
-                }}
+                style={[styles.wrapImage, { transform: [{ translateY }] }]}
               >
-                <Image
-                  source={{ uri: poster }}
-                  style={styles.poster}
-                  resizeMode="contain"
+                <PosterPrimary
+                  poster={poster}
+                  POSTER_SIZE_HEIGHT={POSTER_SIZE_HEIGHT}
+                  id={item.id}
                 />
               </Animated.View>
             </View>
@@ -127,8 +123,19 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  poster: {
-    height: POSTER_SIZE_HEIGHT,
-    borderRadius: 16,
+  container: {
+    flex: 1,
+  },
+  containerImage: {
+    width: POSTER_SIZE_WIDTH,
+  },
+  wrapImage: {
+    marginHorizontal: SPACING,
+    marginTop: 50,
+    padding: SPACING * 2,
+    backgroundColor: "transparent",
+  },
+  spacerItemCarousel: {
+    width: SPACER_ITEM_SIZE,
   },
 });
