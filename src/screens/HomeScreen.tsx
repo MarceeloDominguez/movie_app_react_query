@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from "react";
 import {
   View,
-  Image,
   StyleSheet,
   Animated,
   Dimensions,
-  Text,
+  StatusBar,
+  ScrollView,
 } from "react-native";
 import { useMovies } from "../hooks/useMovies";
 import { Movie } from "../interfaces/moviesInterface";
-import Icon from "@expo/vector-icons/Ionicons";
 import PosterPrimary from "../components/PosterPrimary";
+import Loading from "../components/Loading";
+import PosterSecondary from "../components/PosterSecondary";
 
 const { width, height } = Dimensions.get("window");
 
@@ -36,18 +37,15 @@ export default function HomeScreen() {
     ]);
   }, [movies]);
 
-  if (isLoading) {
-    return (
-      <Text
-        style={{ fontSize: 40, alignItems: "center", justifyContent: "center" }}
-      >
-        Cargando...
-      </Text>
-    );
-  }
+  if (isLoading) return <Loading />;
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <StatusBar
+        barStyle="light-content"
+        translucent
+        backgroundColor="transparent"
+      />
       <View style={StyleSheet.absoluteFillObject}>
         {movies?.map((item, index) => {
           const poster = `${BASE_IMG}/w500${item.poster_path}`;
@@ -100,7 +98,7 @@ export default function HomeScreen() {
 
           const translateY = scrollX.interpolate({
             inputRange,
-            outputRange: [0, -50, 0],
+            outputRange: [0, -40, 0],
           });
 
           return (
@@ -118,20 +116,21 @@ export default function HomeScreen() {
           );
         }}
       />
-    </View>
+      <PosterSecondary />
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flexGrow: 1,
   },
   containerImage: {
     width: POSTER_SIZE_WIDTH,
   },
   wrapImage: {
     marginHorizontal: SPACING,
-    marginTop: 50,
+    marginTop: 40,
     padding: SPACING * 2,
     backgroundColor: "transparent",
   },

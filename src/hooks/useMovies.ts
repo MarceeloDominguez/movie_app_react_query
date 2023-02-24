@@ -12,6 +12,19 @@ async function getMovies() {
   return data.results;
 }
 
+async function getMoviesPopular() {
+  const resp = await fetch(
+    `https://api.themoviedb.org/3/movie/top_rated?api_key=${APIKEY}&language=es-ES`
+  );
+  const data = await resp.json();
+
+  return data.results;
+}
+
 export function useMovies() {
   return useQuery<Movie[]>("movies", getMovies);
+}
+
+export function useMoviesPopular() {
+  return useQuery<Movie[]>("top", getMoviesPopular);
 }

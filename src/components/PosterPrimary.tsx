@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Image } from "react-native";
+import { StyleSheet, Image, TouchableOpacity } from "react-native";
 import Icon from "@expo/vector-icons/Ionicons";
 import { useFavoriteMovie } from "../store/moviesFavorites";
 
@@ -29,7 +29,7 @@ export default function PosterPrimary({
   };
 
   return (
-    <>
+    <TouchableOpacity activeOpacity={1}>
       <Image
         source={{ uri: poster }}
         style={[styles.poster, { height: POSTER_SIZE_HEIGHT }]}
@@ -42,7 +42,7 @@ export default function PosterPrimary({
         color={isFavorite ? "#DC3535" : "rgba(116, 117, 152, 1)"}
         onPress={() => toggleFavorite(id)}
       />
-    </>
+    </TouchableOpacity>
   );
 }
 
@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
   },
   icon: {
     position: "absolute",
-    bottom: 30,
-    right: 30,
+    bottom: 12,
+    right: 12,
   },
 });

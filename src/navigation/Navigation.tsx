@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   barStyles: {
     elevation: 0,
     position: "absolute",
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(255,255,255,0.2)",
     borderTopWidth: 0,
     bottom: 20,
     marginHorizontal: 20,
