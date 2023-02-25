@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Image, TouchableOpacity, View } from "react-native";
 import Icon from "@expo/vector-icons/Ionicons";
 import { useFavoriteMovie } from "../store/moviesFavorites";
 import { CommonActions, useNavigation } from "@react-navigation/native";
@@ -44,19 +44,22 @@ export default function PosterPrimary({
       }
     >
       <SharedElement id={`${movieShared}.image`}>
-        <Image
-          source={{ uri: poster }}
-          style={[styles.poster, { height: POSTER_SIZE_HEIGHT }]}
-          resizeMode="contain"
-        />
+        <>
+          <Image
+            source={{ uri: poster }}
+            style={[styles.poster, { height: POSTER_SIZE_HEIGHT }]}
+            resizeMode="contain"
+          />
+          <View style={styles.icon}>
+            <Icon
+              name="heart"
+              size={26}
+              color={isFavorite ? "#DC3535" : "rgba(0,0,0,0.5)"}
+              onPress={() => toggleFavorite(movie.id)}
+            />
+          </View>
+        </>
       </SharedElement>
-      <Icon
-        name="heart"
-        size={26}
-        style={styles.icon}
-        color={isFavorite ? "#DC3535" : "rgba(116, 117, 152, 1)"}
-        onPress={() => toggleFavorite(movie.id)}
-      />
     </TouchableOpacity>
   );
 }
@@ -66,8 +69,14 @@ const styles = StyleSheet.create({
     borderRadius: 16,
   },
   icon: {
+    backgroundColor: "rgba(255,255,255,0.5)",
+    width: 35,
+    height: 35,
     position: "absolute",
     bottom: 12,
     right: 12,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
   },
 });

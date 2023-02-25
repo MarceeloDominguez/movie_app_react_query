@@ -66,12 +66,14 @@ export default function DetailsScreen({ route }: Props) {
           color="#DC3535"
           onPress={() => navigation.goBack()}
         />
-        <Icon
-          name="heart"
-          size={26}
-          color={isFavorite ? "#DC3535" : "rgba(116, 117, 152, 1)"}
-          onPress={() => toggleFavorite(movie.id)}
-        />
+        <View style={styles.wrapIconHeart}>
+          <Icon
+            name="heart"
+            size={26}
+            color={isFavorite ? "#DC3535" : "rgba(0,0,0,0.5)"}
+            onPress={() => toggleFavorite(movie.id)}
+          />
+        </View>
       </View>
       <View style={styles.wrapInfoMovie}>
         <Text numberOfLines={2} style={styles.titleMovie}>
@@ -100,9 +102,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 18,
     marginTop: 50,
+    alignItems: "center",
+  },
+  wrapIconHeart: {
+    backgroundColor: "rgba(255,255,255,0.5)",
+    width: 35,
+    height: 35,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 5,
   },
   wrapInfoMovie: {
-    backgroundColor: "rgba(255,255,255,0.2)",
+    backgroundColor: "rgba(0,0,0,0.3)",
     marginTop: height * 0.65,
     paddingHorizontal: 18,
     alignItems: "center",

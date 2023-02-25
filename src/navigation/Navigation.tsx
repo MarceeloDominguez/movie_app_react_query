@@ -1,19 +1,28 @@
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { StyleSheet, Animated, Dimensions } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import HomeScreen from "../screens/HomeScreen";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import FavoritesListScreen from "../screens/FavoritesListScreen";
 import Icon from "@expo/vector-icons/Ionicons";
+import { Ionicons } from "@expo/vector-icons";
+import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import DetailsScreen from "../screens/DetailsScreen";
 import { Movie } from "../interfaces/moviesInterface";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 
+const { width } = Dimensions.get("window");
+
 export type RootStackParams = {
   Tabs: undefined;
   DetailsScreen: Movie;
 };
+
+interface Tab {
+  name: string;
+  icon: keyof typeof Ionicons.glyphMap;
+  component: () => JSX.Element;
+}
 
 const Stack = createSharedElementStackNavigator<RootStackParams>();
 const Tab = createBottomTabNavigator();
@@ -27,46 +36,66 @@ const SharedHomeScreen = () => {
   );
 };
 
+const tabs: Tab[] = [
+  { name: "SharedHomeScreen", icon: "home", component: SharedHomeScreen },
+  {
+    name: "FavoritesListScreen",
+    icon: "heart",
+    component: FavoritesListScreen,
+  },
+  { name: "ProfileScreen", icon: "person", component: ProfileScreen },
+];
+
 const Tabs = () => {
+  const offsetAnimation = React.useRef(new Animated.Value(0)).current;
+
   return (
-    <Tab.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-        tabBarActiveTintColor: "#DC3535",
-        tabBarInactiveTintColor: "rgba(116, 117, 152, 1)",
-        tabBarShowLabel: false,
-        tabBarStyle: styles.barStyles,
-        tabBarIcon: ({ color, focused }) => {
-          let iconName: any = "";
-          switch (route.name) {
-            case "SharedHomeScreen":
-              iconName = "home";
-              break;
-            case "FavoritesListScreen":
-              iconName = "heart";
-              break;
-            case "ProfileScreen":
-              iconName = "person";
-              break;
-          }
+    <>
+      <Tab.Navigator
+        screenOptions={{
+          headerShown: false,
+          tabBarShowLabel: false,
+          tabBarStyle: styles.barStyles,
+        }}
+      >
+        {tabs.map((item, index) => {
           return (
-            <>
-              <Icon name={iconName} size={25} color={color} />
-              <View
-                style={[
-                  styles.lineBottomIcon,
-                  { backgroundColor: focused ? "#DC3535" : null! },
-                ]}
-              />
-            </>
+            <Tab.Screen
+              key={item.name}
+              name={item.name}
+              component={item.component}
+              listeners={{
+                focus: () => {
+                  Animated.spring(offsetAnimation, {
+                    toValue: index * (width / tabs.length),
+                    useNativeDriver: true,
+                  }).start();
+                },
+              }}
+              options={{
+                tabBarIcon: ({ focused }) => {
+                  return (
+                    <Icon
+                      name={item.icon}
+                      size={25}
+                      color={focused ? "#DC3535" : "rgba(0,0,0,0.5)"}
+                    />
+                  );
+                },
+              }}
+            />
           );
-        },
-      })}
-    >
-      <Tab.Screen name="SharedHomeScreen" component={SharedHomeScreen} />
-      <Tab.Screen name="FavoritesListScreen" component={FavoritesListScreen} />
-      <Tab.Screen name="ProfileScreen" component={ProfileScreen} />
-    </Tab.Navigator>
+        })}
+      </Tab.Navigator>
+      <Animated.View
+        style={[
+          styles.lineBottomIcon,
+          {
+            transform: [{ translateX: offsetAnimation }],
+          },
+        ]}
+      />
+    </>
   );
 };
 
@@ -105,15 +134,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     backgroundColor: "rgba(255,255,255,0.2)",
     borderTopWidth: 0,
-    bottom: 20,
-    marginHorizontal: 20,
-    borderRadius: 10,
     height: 60,
   },
   lineBottomIcon: {
+    position: "absolute",
+    width: 20,
     height: 2,
-    width: 25,
-    borderRadius: 2,
-    marginTop: 5,
+    backgroundColor: "red",
+    left: width / tabs.length / 2 - 10,
+    bottom: 10,
   },
 });
