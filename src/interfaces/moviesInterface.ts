@@ -26,6 +26,7 @@ export interface Movie {
   video: boolean;
   vote_average: number;
   vote_count: number;
+  id_shared: number; //id para shared element
 }
 
 export enum OriginalLanguage {

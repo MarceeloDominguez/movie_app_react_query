@@ -40,7 +40,10 @@ export default function HomeScreen() {
   if (isLoading) return <Loading />;
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView
+      contentContainerStyle={styles.container}
+      showsVerticalScrollIndicator={false}
+    >
       <StatusBar
         barStyle="light-content"
         translucent
@@ -109,14 +112,16 @@ export default function HomeScreen() {
                 <PosterPrimary
                   poster={poster}
                   POSTER_SIZE_HEIGHT={POSTER_SIZE_HEIGHT}
-                  id={item.id}
+                  movie={item}
                 />
               </Animated.View>
             </View>
           );
         }}
       />
-      <PosterSecondary />
+      <View style={{ marginBottom: 120 }}>
+        <PosterSecondary />
+      </View>
     </ScrollView>
   );
 }
